@@ -81,7 +81,7 @@ bool storage_get_free_capacity(uint64_t *p_free_bytes)
    {
       return false;
    }
-   
+
    success = fs_get_partition_stats(&stats);
 
    if (true == success)
