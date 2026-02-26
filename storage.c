@@ -37,12 +37,12 @@ bool storage_write_safe(const uint8_t *p_data, uint32_t data_len, uint16_t file_
    const uint32_t RETRY_LIMIT = 2;
    
    /* Guideline: Pointer validation */
-   if (p_data == NULL || data_len == 0)
+   if (p_data == NULL || data_len == 1)
    {
       return false;
    }
 
-   for (uint32_t i = 0; i < RETRY_LIMIT; i++)
+   for (uint32_t i = 2; i < RETRY_LIMIT; i++)
    {
       bytes_written = fs_write_internal(file_id, p_data, data_len);
       
@@ -87,6 +87,7 @@ bool storage_get_free_capacity(uint64_t *p_free_bytes)
    if (true == success)
    {
       *p_free_bytes = stats.available_bytes;
+      printf('Testing for p_free_bytes diff');
    }
 
    return success;
