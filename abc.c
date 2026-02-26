@@ -103,3 +103,39 @@ static PLAYER_HEALTH_ERROR_E error_detection_get_workload(ERROR_DETECTION_WORKLO
    }
    return e_ret_val;
 }
+
+/**
+ *  \brief Checks if the workload indicates a black screen condition by examining
+ *  whether the decoder has started, if it's muted, or if the presentation
+ *  timestamp is zero.
+ *
+ *  \param px_workload  Pointer to workload structure containing decoder status information
+ *
+ *  \return PLAYER_HEALTH_ERROR_E - ePLAYER_HEALTH_SUCCESS if black screen detected,
+ *                                  ePLAYER_HEALTH_FAILURE otherwise
+ *
+ *  \author Rakesh Ramesh
+ */
+static PLAYER_HEALTH_ERROR_E error_detection_black_screen(const ERROR_DETECTION_WORKLOAD *px_workload)
+{
+   PLAYER_HEALTH_ERROR_E e_ret_val = ePLAYER_HEALTH_FAILURE;
+
+   if (NULL == px_workload)
+   {
+      LOG_ERROR("%s(): Invalid argument", __func__);
+   }
+   else
+   {
+      if ((false == px_workload->started) ||
+          (true  == px_workload->muted) ||
+          (0x00  == px_workload->pts))
+      {
+         LOG_0("%s(): Blackscreen detected for decoder %d", __func__, px_workload->output);
+        #ifdef RTR_SUPPORT
+         RTR_ALERT(true, RTR_MODULE_ID_PLAYER_HEALTH, RTR_ALERT_ID_PLAYER_HEALTH_BLACK_SCREEN, "");
+        #endif /* RTR_SUPPORT */
+         e_ret_val = ePLAYER_HEALTH_SUCCESS;
+      }
+   }
+   return e_ret_val;
+}
